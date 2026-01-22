@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, Sparkles, Star, ShoppingBag, X, Flame } from 'lucide-react';
@@ -236,73 +236,68 @@ export const Products = () => {
           textAlign: 'center',
           padding: '60px 20px 40px'
         }}>
-          <style>{`
-            /* الفونت الجديد وتكبير العناوين */
+<style>{`
+            /* الفونت والعنوان الكبير */
             .main-shop-title {
-              font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-              font-size: clamp(3.5rem, 10vw, 5.5rem); /* حجم ضخم وجذاب */
-              font-weight: 850;
-              letter-spacing: -3px;
-              color: #ffffff;
-              margin: 15px 0;
-              line-height: 1;
+              font-family: 'Inter', sans-serif !important;
+              font-size: clamp(3.5rem, 10vw, 5.5rem) !important; 
+              font-weight: 900 !important;
+              color: var(--text-main) !important;
+              text-shadow: 0 10px 30px rgba(43, 32, 24, 0.2) !important;
+              margin: 15px 0 !important;
+              line-height: 1 !important;
+              text-transform: uppercase !important;
             }
 
+            /* إجبار اللون البرتقالي المحروق على الـ Span والنقطة */
             .main-shop-title span {
-              color: var(--primary-blue, #c7772f);
+              color: #bb6f37 !important;
+              text-shadow: none !important;
             }
 
+            /* إجبار اللون على الـ Label */
             .collection-label {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 10px;
-              font-size: 1rem;
-              letter-spacing: 3px;
-              color: var(--primary-blue, #c7772f);
-              font-weight: 600;
-              text-transform: uppercase;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              gap: 10px !important;
+              color: #bb6f37 !important; /* اللون الجديد */
+              font-weight: 800 !important;
+              font-size: 1rem !important;
+              text-transform: uppercase !important;
             }
 
-            /* تكبير وتوسيع شريط البحث */
+            /* شريط البحث - خليه يظهر غصب عنه */
             .search-wrapper {
-              width: 100%;
-              max-width: 800px; /* زيادة العرض */
-              margin-top: 45px;
-              position: relative;
+              width: 100% !important;
+              max-width: 800px !important;
+              margin: 45px auto 0 !important;
+              position: relative !important;
             }
 
             .premium-search-input {
-              width: 100%;
-              padding: 22px 35px; /* زيادة السماكة */
-              background: rgba(255, 255, 255, 0.05);
-              border: 1px solid rgba(255, 255, 255, 0.1);
-              border-radius: 100px;
-              color: white;
-              font-size: 1.2rem; /* تكبير خط الكتابة */
-              transition: all 0.3s ease;
-              backdrop-filter: blur(12px);
+              width: 100% !important;
+              padding: 22px 35px !important;
+              background: #ffffff !important; /* خلفية بيضاء صريحة للايت مود */
+              border: 1.5px solid #bb6f37 !important; /* بوردر باللون الجديد */
+              border-radius: 100px !important;
+              color: #2b2018 !important; /* خط غامق */
+              font-size: 1.1rem !important;
             }
 
-            .premium-search-input:focus {
-              border-color: var(--primary-blue, #c7772f);
-              background: rgba(255, 255, 255, 0.08);
-              box-shadow: 0 0 40px rgba(199, 119, 47, 0.15);
-              outline: none;
-            }
-
+            /* أيقونة البحث */
             .search-icon-fixed {
-              position: absolute;
-              right: 30px;
-              top: 50%;
-              transform: translateY(-50%);
-              scale: 1.3;
-              opacity: 0.7;
+              position: absolute !important;
+              right: 30px !important;
+              top: 50% !important;
+              transform: translateY(-50%) !important;
+              color: #bb6f37 !important; /* اللون الجديد للأيقونة */
+              z-index: 10 !important;
             }
 
             [dir="rtl"] .search-icon-fixed {
-              right: auto;
-              left: 30px;
+              right: auto !important;
+              left: 30px !important;
             }
           `}</style>
 
