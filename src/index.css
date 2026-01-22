@@ -325,18 +325,11 @@ body.light, [data-theme='light'] {
   --badge-text: #fff8f0;
 }
 
-/* Shop base styles. */
-/* Ensure the page starts with the dark background. */
-html, body {
-  background-color: #0f0b08; /* Fallback background before CSS variables load. */
-  background-color: var(--shop-bg);
-  color: var(--shop-text);
-  margin: 0;
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
+/* Shop base styles scoped to the products page. */
 
 .premium-shop-container {
   background-color: var(--shop-bg);
+  color: var(--shop-text);
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -373,7 +366,10 @@ html, body {
 }
 
 /* Ensure headings use the shop text color. */
-h1, h2, h3, h4 {
+.premium-shop-container h1,
+.premium-shop-container h2,
+.premium-shop-container h3,
+.premium-shop-container h4 {
   color: var(--shop-text);
   letter-spacing: -0.02em;
 }
