@@ -405,7 +405,7 @@ export default function Home() {
 
         .logo-intro {
           position: relative;
-          padding: 80px 7% 30px;
+          padding: 40px 7% 10px;
           display: flex;
           justify-content: center;
         }
@@ -414,14 +414,16 @@ export default function Home() {
           position: relative;
           display: flex;
           align-items: center;
-          gap: 28px;
-          padding: 30px 42px;
-          border-radius: 36px;
+          gap: 20px;
+          padding: 24px 30px;
+          border-radius: 28px;
           background: var(--bg-card);
-          border: 2px solid var(--border);
-          box-shadow: 0 20px 50px rgba(43, 32, 24, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+          border: 1px solid var(--border);
+          box-shadow: 0 18px 40px rgba(43, 32, 24, 0.14);
           overflow: hidden;
-          backdrop-filter: blur(20px);
+          backdrop-filter: blur(18px);
+          max-width: 520px;
+          width: 100%;
         }
 
         .logo-shell::after {
@@ -429,24 +431,24 @@ export default function Home() {
           position: absolute;
           inset: 0;
           background: radial-gradient(circle at top right, var(--primary-soft), transparent 60%);
-          opacity: 0.7;
+          opacity: 0.55;
           pointer-events: none;
         }
 
         .logo-badge {
-          width: 100px;
-          height: 100px;
-          border-radius: 26px;
+          width: 84px;
+          height: 84px;
+          border-radius: 22px;
           background: var(--bg-secondary);
           display: grid;
           place-items: center;
           box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-          border: 2px solid var(--border);
+          border: 1px solid var(--border);
         }
 
         .logo-badge img {
-          width: 82px;
-          height: 82px;
+          width: 64px;
+          height: 64px;
           object-fit: contain;
           filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
         }
@@ -460,14 +462,14 @@ export default function Home() {
 
         .logo-words span:first-child {
           font-weight: 900;
-          font-size: 1.6rem;
+          font-size: 1.4rem;
           color: var(--text-main);
           letter-spacing: -0.5px;
         }
 
         .logo-words span:last-child {
           font-weight: 700;
-          font-size: 1.1rem;
+          font-size: 1rem;
           color: var(--text-muted);
         }
           
@@ -931,10 +933,16 @@ export default function Home() {
 
         @media (max-width: 768px) {
           .home-section { padding: 70px 6% !important; }
-          .logo-intro { padding: 60px 6% 10px; }
-          .logo-shell { padding: 20px 24px; border-radius: 24px; }
+          .logo-intro { padding: 30px 6% 0; }
+          .logo-shell { 
+            padding: 20px 22px; 
+            border-radius: 22px; 
+            flex-direction: column;
+            text-align: center;
+          }
+          .logo-words { align-items: center; }
           .logo-badge { width: 70px; height: 70px; }
-          .logo-badge img { width: 58px; height: 58px; }
+          .logo-badge img { width: 54px; height: 54px; }
 
           .hero-grid { gap: 40px !important; padding: 0 6% !important; text-align: center; }
           .hero-glass { max-width: 100%; padding: 28px; margin: 0 auto; text-align: center; }
@@ -969,34 +977,6 @@ export default function Home() {
           .product-card img { height: 220px !important; }
         }
       `}</style>
-
-      {/* Logo intro */}
-      <section className="logo-intro">
-        <motion.div
-          className="logo-shell"
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-        >
-          <motion.div
-            className="logo-badge"
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <img src="/assets/images/Gemini_Generated_Image_j8n8etj8n8etj8n8.png" alt="Nemora logo" />
-          </motion.div>
-
-          <motion.div
-            className="logo-words"
-            initial={{ opacity: 0, x: isAr ? 20 : -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-          >
-            <span>{copy.brandWord1}</span>
-            <span>{copy.brandWord2}</span>
-          </motion.div>
-        </motion.div>
-      </section>
 
       {/* Hero */}
       <section className="hero-section">
@@ -1238,6 +1218,36 @@ export default function Home() {
           </motion.div>
         ))}
       </div>
+
+      {/* Logo intro */}
+      <section className="logo-intro">
+        <motion.div
+          className="logo-shell"
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        >
+          <motion.div
+            className="logo-badge"
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <img src="/assets/images/Gemini_Generated_Image_j8n8etj8n8etj8n8.png" alt="Nemora logo" />
+          </motion.div>
+
+          <motion.div
+            className="logo-words"
+            initial={{ opacity: 0, x: isAr ? 20 : -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            <span>{copy.brandWord1}</span>
+            <span>{copy.brandWord2}</span>
+          </motion.div>
+        </motion.div>
+      </section>
 
       {/* Why Us */}
       <section className="home-section">
