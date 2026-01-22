@@ -3382,6 +3382,17 @@ body {
     font-size: 1rem;
   }
 
+  .contact-form {
+    overflow: visible;
+  }
+
+  .order-success {
+    position: fixed;
+    inset: 0;
+    padding: 24px;
+    z-index: 5000;
+  }
+
   .order-status {
     font-size: 0.95rem;
     flex-direction: column;
