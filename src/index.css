@@ -2524,6 +2524,35 @@ body {
   cursor: pointer;
 }
 
+[data-theme='light'] .notif-glass-content,
+body.light .notif-glass-content {
+  background: rgba(255, 248, 240, 0.95);
+  border: 1px solid rgba(43, 32, 24, 0.08);
+  box-shadow: 0 20px 45px rgba(43, 32, 24, 0.12), inset 0 0 0 rgba(255, 255, 255, 0);
+}
+
+[data-theme='light'] .notif-title,
+body.light .notif-title {
+  color: var(--text-main);
+}
+
+[data-theme='light'] .notif-desc,
+body.light .notif-desc {
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+[data-theme='light'] .notif-icon-box,
+body.light .notif-icon-box {
+  background: var(--primary-soft);
+}
+
+[data-theme='light'] .notif-close-x,
+body.light .notif-close-x {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
 /* Notification mobile tweaks. */
 @media (max-width: 768px) {
   .notif-glass-content {
