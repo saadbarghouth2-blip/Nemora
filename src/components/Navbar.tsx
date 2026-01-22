@@ -42,21 +42,6 @@ export const Navbar = () => {
   return (
     <>
       <style>{`
-        :root {
-          --bg-card: #ffffff;
-          --bg-secondary: #f3f4f6; 
-          --text-main: #111827;    /* أسود قوي للوضوح في اللايت */
-          --border: rgba(0, 0, 0, 0.1);
-          --primary: #c7772f;
-        }
-
-        [data-theme='dark'] {
-          --bg-card: #120e0c;
-          --bg-secondary: #1c1816;
-          --text-main: #f9fafb;
-          --border: rgba(255, 255, 255, 0.1);
-        }
-
         .nav-master {
           position: fixed; top: 0; left: 0; right: 0; z-index: 3000;
           padding: 18px 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
