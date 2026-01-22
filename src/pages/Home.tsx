@@ -438,7 +438,7 @@ export default function Home() {
         .logo-badge {
           width: 84px;
           height: 84px;
-          border-radius: 22px;
+          border-radius: 12px;
           background: var(--bg-secondary);
           display: grid;
           place-items: center;
@@ -450,6 +450,7 @@ export default function Home() {
           width: 64px;
           height: 64px;
           object-fit: contain;
+          border-radius: 8px;
           filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
         }
 
@@ -944,7 +945,7 @@ export default function Home() {
           .logo-badge { width: 70px; height: 70px; }
           .logo-badge img { width: 54px; height: 54px; }
 
-          .hero-grid { gap: 40px !important; padding: 0 6% !important; text-align: center; }
+          .hero-grid { gap: 40px !important; padding: 70px 6% 0 !important; text-align: center; }
           .hero-glass { max-width: 100%; padding: 28px; margin: 0 auto; text-align: center; }
           .hero-glass h1 { font-size: clamp(2.1rem, 8vw, 3rem) !important; }
           .hero-glass p { font-size: 1.05rem !important; margin-bottom: 28px !important; }
