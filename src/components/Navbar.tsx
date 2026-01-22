@@ -268,8 +268,21 @@ export const Navbar = () => {
                 <div style={{ flex: 1 }}>
                   {['home', 'productsNav', 'about', 'contact'].map((key) => {
                     const path = key === 'home' ? '/' : `/${key.replace('Nav', '')}`;
+                    const isActive = location.pathname === path;
+                    const mobileLinkStyle = {
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '18px',
+                      borderRadius: '18px',
+                      textDecoration: 'none',
+                      fontWeight: 700,
+                      marginBottom: '10px',
+                      background: isActive ? 'var(--primary)' : 'var(--bg-secondary)',
+                      color: isActive ? 'white' : 'var(--text-main)'
+                    };
                     return (
-                      <Link key={key} to={path} onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px', borderRadius: '18px', textDecoration: 'none', fontWeight: 700, marginBottom: '10px', background: location.pathname === path ? 'var(--primary)' : 'var(--bg-secondary)', color: location.pathname === path ? 'white' : 'var(--text-main)' }}>
+                      <Link key={key} to={path} onClick={() => setIsMenuOpen(false)} style={mobileLinkStyle}>
                         {t(key)}
                         <ChevronRight size={18} style={{ transform: isRtl ? "rotate(180deg)" : "none" }} />
                       </Link>
