@@ -151,7 +151,7 @@ export const About: React.FC = () => {
       <style>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root {
+        .about-page {
           --primary: #c7772f;
           --primary-soft: rgba(199, 119, 47, 0.14);
           --accent: #2f6b57;
