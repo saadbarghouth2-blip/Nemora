@@ -1,0 +1,22 @@
+{
+  "id": "1768997893190-5krmul",
+  "fileUrl": "http://localhost:5174/uploads/1768997870353-1733864373861.jpg",
+  "fileName": "1733864373861.jpg",
+  "details": {
+    "name": "Saad Elsayed",
+    "phone": "01067431264",
+    "address": "Egypt",
+    "brandName": "ew",
+    "brandWebsite": "ew",
+    "brandSocial": "we",
+    "quantity": "ew",
+    "shape": "polo",
+    "technique": "embroidery",
+    "embroidery": "patch",
+    "size": "xl",
+    "color": "whait",
+    "notes": ""
+  },
+  "orderUrl": "http://localhost:5174/orders/1768997893190-5krmul",
+  "createdAt": "2026-01-21T12:18:13.190Z"
+}
