@@ -689,18 +689,18 @@ export const Contact = () => {
             </div>
           )}
           </div>
-          <div className={`order-success${showSuccess ? ' show' : ''}`} role="status" aria-live="polite">
-            <div className="order-success-card">
-              <div className="success-plane">
-                <Send size={26} />
-              </div>
-              <div className="success-text">
-                <div className="success-title">{isAr ? 'تم الإرسال' : 'Sent successfully'}</div>
-                <div className="success-subtitle">{isAr ? 'هنكلمك قريبًا' : 'We will contact you soon'}</div>
-              </div>
-            </div>
-          </div>
         </form>
+      </div>
+      <div className={`order-success${showSuccess ? ' show' : ''}`} role="status" aria-live="polite">
+        <div className="order-success-card">
+          <div className="success-plane">
+            <Send size={26} />
+          </div>
+          <div className="success-text">
+            <div className="success-title">{isAr ? 'تم الإرسال' : 'Sent successfully'}</div>
+            <div className="success-subtitle">{isAr ? 'هنكلمك قريبًا' : 'We will contact you soon'}</div>
+          </div>
+        </div>
       </div>
     </div>
   );
