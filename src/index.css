@@ -3096,8 +3096,10 @@ body.light .notif-close-x {
 }
 
 .order-success {
-  position: absolute;
+  position: fixed;
   inset: 0;
+  padding: 24px;
+  z-index: 5000;
   display: grid;
   place-items: center;
   background: rgba(15, 11, 8, 0.82);
@@ -3413,13 +3415,6 @@ body.light .notif-close-x {
 
   .contact-form {
     overflow: visible;
-  }
-
-  .order-success {
-    position: fixed;
-    inset: 0;
-    padding: 24px;
-    z-index: 5000;
   }
 
   .order-status {
