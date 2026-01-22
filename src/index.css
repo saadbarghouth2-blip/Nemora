@@ -390,7 +390,7 @@ h1, h2, h3, h4 {
 }
 
 .main-shop-title {
-  color: var(--shop-text);
+  color: var(--text-main); 
   font-size: clamp(3rem, 7vw, 6.5rem);
   font-weight: 900;
   margin: 0;
@@ -398,15 +398,19 @@ h1, h2, h3, h4 {
   font-style: italic;
   text-transform: uppercase;
   letter-spacing: -2px;
+  text-shadow: 0 10px 30px rgba(43, 32, 24, 0.12);
 }
 
-.main-shop-title span { color: var(--primary-blue); }
+.main-shop-title span { 
+  color: #bb6f37;
+  text-shadow: none; 
+}
 
 .collection-label {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--primary-blue);
+  color: #bb6f37;
   font-weight: 900;
   font-size: 12px;
   letter-spacing: 3px;
@@ -3214,6 +3218,41 @@ body {
   }
 }
 
+/* 1. العنوان الكبير "المتجر" */
+.main-shop-title {
+  /* خليه أبيض بس بـ Shadow بني عشان يبان زي الصورة الأولى */
+  color: var(--text-main) !important; 
+  font-family: 'Inter', sans-serif !important;
+  font-size: clamp(3.5rem, 10vw, 5.5rem) !important;
+  font-weight: 900 !important;
+  text-shadow: 0 10px 30px rgba(187, 111, 55, 0.3) !important; /* ظل بلون البراند */
+}
+
+/* 2. النقطة أو الـ Span اللي في العنوان */
+.main-shop-title span {
+  color: #bb6f37 !important; /* اللون اللي إنت عاوزه */
+  text-shadow: none !important;
+}
+
+/* 3. كلمة "مجموعة نمورا 2026" */
+.collection-label {
+  color: #bb6f37 !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 4. أيقونة النجمة اللي جنبها */
+.collection-label svg {
+  stroke: #bb6f37 !important; /* تغيير لون الـ Icon نفسه */
+}
+
+/* 5. أيقونة البحث (Search Icon) */
+.search-icon-fixed {
+  color: #bb6f37 !important;
+  opacity: 1 !important;
+}
 @media (max-width: 768px) {
   .shop-inner-content {
     padding: 90px 16px 30px;
