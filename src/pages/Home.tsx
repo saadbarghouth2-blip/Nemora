@@ -1,30 +1,68 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
-import { ArrowRight, Truck, Palette, Sparkles, ShieldCheck, ShoppingBag, Zap, Star, Award, Users, CheckCircle, Package, Clock, Flame } from 'lucide-react';
+import {
+  ArrowRight,
+  Truck,
+  Palette,
+  Sparkles,
+  ShieldCheck,
+  ShoppingBag,
+  Zap,
+  Star,
+  Award,
+  Users,
+  CheckCircle,
+  Package,
+  Clock,
+  Flame
+} from 'lucide-react';
+
 import { useLanguage } from '../contexts/LanguageContext';
 import { StyleAssistant } from '../components/StyleAssistant';
 
-const Counter = ({ value, suffix = '' }) => {
+type Lang = 'ar' | 'eg' | 'en';
+
+type CounterProps = {
+  value: number;
+  suffix?: string;
+};
+
+const Counter: React.FC<CounterProps> = ({ value, suffix = '' }) => {
   const [displayValue, setDisplayValue] = useState(0);
-  const ref = useRef(null);
+  const ref = useRef<HTMLSpanElement | null>(null);
   const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    if (isInView) {
-      const controls = animate(0, value, {
-        duration: 2.5,
-        ease: "easeOut",
-        onUpdate: (latest) => setDisplayValue(Math.floor(latest)),
-      });
-      return () => controls.stop();
-    }
+    if (!isInView) return;
+
+    const controls = animate(0, value, {
+      duration: 2.5,
+      ease: 'easeOut',
+      onUpdate: (latest) => setDisplayValue(Math.floor(latest)),
+    });
+
+    return () => controls.stop();
   }, [isInView, value]);
 
-  return <span ref={ref}>{displayValue}{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {displayValue}
+      {suffix}
+    </span>
+  );
 };
 
-const products = [
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  rating: number;
+  badge: string;
+};
+
+const products: Product[] = [
   {
     id: 1,
     name: 'Premium Hoodie',
@@ -131,102 +169,147 @@ const products = [
   },
 ];
 
+type Testimonial = {
+  name: string;
+  text: string;
+  rating: number;
+  avatar: string;
+};
+
 export default function Home() {
-  const { language, setLanguage, dir } = useLanguage();
+  const { language, dir } = useLanguage();
+  const lang = (language as Lang) || 'ar';
+  const isAr = lang === 'ar' || lang === 'eg';
+
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+
   const { scrollYProgress } = useScroll();
   const scaleProgress = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
   const opacityProgress = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const videoUrl = "https://assets.mixkit.co/videos/preview/mixkit-embroidery-machine-working-17712-full-hd.mp4";
 
-  const isAr = language === 'ar' || language === 'eg';
+  const videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-embroidery-machine-working-17712-full-hd.mp4';
 
-  const content = {
+  const content: Record<Lang, any> = {
     ar: {
-      heroTitle: '\u0623\u0646\u0627\u0642\u0629 \u0645\u0637\u0644\u0642\u0629',
-      heroSubtitle: '\u0642\u0637\u0639 \u0645\u0645\u064a\u0632\u0629 \u062a\u0639\u0643\u0633 \u0634\u062e\u0635\u064a\u062a\u0643 \u0628\u0630\u0648\u0642 \u0641\u0631\u064a\u062f',
-      shopNow: '\u062a\u0633\u0648\u0642 \u0627\u0644\u0622\u0646',
-      exploreMore: '\u0627\u0643\u062a\u0634\u0641 \u0627\u0644\u0645\u0632\u064a\u062f',
-      freeShipping: '\u0634\u062d\u0646 \u0645\u062c\u0627\u0646\u064a',
-      freeShippingDesc: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639 \u0644\u0643\u0644 \u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0627\u062a',
-      customDesign: '\u062a\u0635\u0645\u064a\u0645 \u0645\u062e\u0635\u0635',
-      customDesignDesc: '\u0627\u062e\u062a\u0627\u0631 \u0627\u0644\u0623\u0644\u0648\u0627\u0646 \u0648\u0627\u0644\u0637\u0628\u0627\u0639\u0629 \u0648\u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644',
-      highQuality: '\u062c\u0648\u062f\u0629 \u0639\u0627\u0644\u064a\u0629',
-      highQualityDesc: '\u062e\u0627\u0645\u0629 \u0645\u0645\u062a\u0627\u0632\u0629 \u0648\u062a\u0634\u0637\u064a\u0628 \u0646\u0638\u064a\u0641',
-      securePayment: '\u062f\u0641\u0639 \u0622\u0645\u0646',
-      securePaymentDesc: '\u062d\u0645\u0627\u064a\u0629 \u0643\u0627\u0645\u0644\u0629 \u0644\u0644\u0645\u062f\u0641\u0648\u0639\u0627\u062a',
-      featuredTitle: '\u0627\u0644\u0642\u0637\u0639 \u0627\u0644\u0645\u062e\u062a\u0627\u0631\u0629',
-      viewAll: '\u0639\u0631\u0636 \u0627\u0644\u0643\u0644',
-      whyUs: '\u0644\u0645\u0627\u0630\u0627 \u0646\u0645\u0648\u0631\u0627\u061f',
-      testimonials: '\u0622\u0631\u0627\u0621 \u0627\u0644\u0639\u0645\u0644\u0627\u0621',
-      brandWord1: '\u0647\u0648\u062f\u064a\u0632 \u0645\u0637\u0628\u0648\u0639\u0629',
-      brandWord2: '\u0637\u0628\u0627\u0639\u0629 \u0648\u062a\u0637\u0631\u064a\u0632',
-      journeyTitle: '\u0631\u062d\u0644\u0629 \u062a\u0635\u0645\u064a\u0645\u0643',
-      journeySubtitle: '\u0645\u0646 \u0627\u0644\u0641\u0643\u0631\u0629 \u0644\u0644\u062a\u0633\u0644\u064a\u0645 \u0641\u064a 4 \u062e\u0637\u0648\u0627\u062a',
-      step1Title: '\u0627\u062e\u062a\u0627\u0631 \u0627\u0644\u0642\u0637\u0639\u0629',
-      step1Desc: '\u0647\u0648\u062f\u064a\u060c \u062a\u064a\u0634\u064a\u0631\u062a\u060c \u062c\u0627\u0643\u064a\u062a',
-      step2Title: '\u062e\u0635\u0635 \u062a\u0635\u0645\u064a\u0645\u0643',
-      step2Desc: '\u0623\u0644\u0648\u0627\u0646 \u0648\u0637\u0628\u0627\u0639\u0629 \u0648\u062a\u0641\u0627\u0635\u064a\u0644',
-      step3Title: '\u0641\u062d\u0635 \u0627\u0644\u062c\u0648\u062f\u0629',
-      step3Desc: '\u062a\u0634\u0637\u064a\u0628 \u062f\u0642\u064a\u0642 \u0648\u0645\u0639\u0627\u064a\u064a\u0631 \u0639\u0627\u0644\u064a\u0629',
-      step4Title: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639',
-      step4Desc: '\u064a\u0648\u0635\u0644 \u0644\u062d\u062f \u0628\u0627\u0628\u0643 \u062e\u0644\u0627\u0644 24-48 \u0633\u0627\u0639\u0629',
-      eg: '\u0645\u0635\u0631\u064a',
-      ar: '\u0639\u0631\u0628\u064a',
-      en: 'English'
+      heroTitle: 'أناقة مطلقة',
+      heroSubtitle: 'قطع مميزة تعكس شخصيتك بذوق فريد',
+      shopNow: 'تسوق الآن',
+      exploreMore: 'اكتشف المزيد',
+
+      freeShipping: 'شحن مجاني',
+      freeShippingDesc: 'توصيل سريع لكل المحافظات',
+      customDesign: 'تصميم مخصص',
+      customDesignDesc: 'اختار الألوان والطباعة والتفاصيل',
+      highQuality: 'جودة عالية',
+      highQualityDesc: 'خامة ممتازة وتشطيب نظيف',
+      securePayment: 'دفع آمن',
+      securePaymentDesc: 'حماية كاملة للمدفوعات',
+
+      featuredTitle: 'القطع المختارة',
+      viewAll: 'عرض الكل',
+
+      whyUs: 'لماذا نمورا؟',
+      testimonials: 'آراء العملاء',
+
+      brandWord1: 'هوديز مطبوعة',
+      brandWord2: 'طباعة وتطريز',
+
+      journeyTitle: 'رحلة تصميمك',
+      journeySubtitle: 'من الفكرة للتسليم في 4 خطوات',
+      step1Title: 'اختار القطعة',
+      step1Desc: 'هودي، تيشيرت، جاكيت',
+      step2Title: 'خصّص تصميمك',
+      step2Desc: 'ألوان وطباعة وتفاصيل',
+      step3Title: 'فحص الجودة',
+      step3Desc: 'تشطيب دقيق ومعايير عالية',
+      step4Title: 'توصيل سريع',
+      step4Desc: 'يوصل لحد بابك خلال 24–48 ساعة',
+
+      premiumKicker: 'مجموعة نمورا المميزة',
+      artWord: 'فن',
+
+      stats: {
+        clients: 'عميل واثق',
+        designs: 'تصميم فريد',
+        satisfaction: 'رضا العملاء',
+        shipping: 'شحن سريع',
+      },
+
+      processLabel: 'العملية'
     },
+
     eg: {
-      heroTitle: '\u0623\u0646\u0627\u0642\u0629 \u0645\u0637\u0644\u0642\u0629',
-      heroSubtitle: '\u0642\u0637\u0639 \u0645\u0645\u064a\u0632\u0629 \u062a\u0639\u0643\u0633 \u0634\u062e\u0635\u064a\u062a\u0643 \u0628\u0630\u0648\u0642 \u0641\u0631\u064a\u062f',
-      shopNow: '\u062a\u0633\u0648\u0642 \u0627\u0644\u0622\u0646',
-      exploreMore: '\u0627\u0643\u062a\u0634\u0641 \u0627\u0644\u0645\u0632\u064a\u062f',
-      freeShipping: '\u0634\u062d\u0646 \u0645\u062c\u0627\u0646\u064a',
-      freeShippingDesc: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639 \u0644\u0643\u0644 \u0627\u0644\u0645\u062d\u0627\u0641\u0638\u0627\u062a',
-      customDesign: '\u062a\u0635\u0645\u064a\u0645 \u0645\u062e\u0635\u0635',
-      customDesignDesc: '\u0627\u062e\u062a\u0627\u0631 \u0627\u0644\u0623\u0644\u0648\u0627\u0646 \u0648\u0627\u0644\u0637\u0628\u0627\u0639\u0629 \u0648\u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644',
-      highQuality: '\u062c\u0648\u062f\u0629 \u0639\u0627\u0644\u064a\u0629',
-      highQualityDesc: '\u062e\u0627\u0645\u0629 \u0645\u0645\u062a\u0627\u0632\u0629 \u0648\u062a\u0634\u0637\u064a\u0628 \u0646\u0638\u064a\u0641',
-      securePayment: '\u062f\u0641\u0639 \u0622\u0645\u0646',
-      securePaymentDesc: '\u062d\u0645\u0627\u064a\u0629 \u0643\u0627\u0645\u0644\u0629 \u0644\u0644\u0645\u062f\u0641\u0648\u0639\u0627\u062a',
-      featuredTitle: '\u0627\u0644\u0642\u0637\u0639 \u0627\u0644\u0645\u062e\u062a\u0627\u0631\u0629',
-      viewAll: '\u0639\u0631\u0636 \u0627\u0644\u0643\u0644',
-      whyUs: '\u0644\u0645\u0627\u0630\u0627 \u0646\u0645\u0648\u0631\u0627\u061f',
-      testimonials: '\u0622\u0631\u0627\u0621 \u0627\u0644\u0639\u0645\u0644\u0627\u0621',
-      brandWord1: '\u0647\u0648\u062f\u064a\u0632 \u0645\u0637\u0628\u0648\u0639\u0629',
-      brandWord2: '\u0637\u0628\u0627\u0639\u0629 \u0648\u062a\u0637\u0631\u064a\u0632',
-      journeyTitle: '\u0631\u062d\u0644\u0629 \u062a\u0635\u0645\u064a\u0645\u0643',
-      journeySubtitle: '\u0645\u0646 \u0627\u0644\u0641\u0643\u0631\u0629 \u0644\u0644\u062a\u0633\u0644\u064a\u0645 \u0641\u064a 4 \u062e\u0637\u0648\u0627\u062a',
-      step1Title: '\u0627\u062e\u062a\u0627\u0631 \u0627\u0644\u0642\u0637\u0639\u0629',
-      step1Desc: '\u0647\u0648\u062f\u064a\u060c \u062a\u064a\u0634\u064a\u0631\u062a\u060c \u062c\u0627\u0643\u064a\u062a',
-      step2Title: '\u062e\u0635\u0635 \u062a\u0635\u0645\u064a\u0645\u0643',
-      step2Desc: '\u0623\u0644\u0648\u0627\u0646 \u0648\u0637\u0628\u0627\u0639\u0629 \u0648\u062a\u0641\u0627\u0635\u064a\u0644',
-      step3Title: '\u0641\u062d\u0635 \u0627\u0644\u062c\u0648\u062f\u0629',
-      step3Desc: '\u062a\u0634\u0637\u064a\u0628 \u062f\u0642\u064a\u0642 \u0648\u0645\u0639\u0627\u064a\u064a\u0631 \u0639\u0627\u0644\u064a\u0629',
-      step4Title: '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639',
-      step4Desc: '\u064a\u0648\u0635\u0644 \u0644\u062d\u062f \u0628\u0627\u0628\u0643 \u062e\u0644\u0627\u0644 24-48 \u0633\u0627\u0639\u0629',
-      eg: '\u0645\u0635\u0631\u064a',
-      ar: '\u0639\u0631\u0628\u064a',
-      en: 'English'
+      heroTitle: 'أناقة مظبوطة',
+      heroSubtitle: 'قطع شيك تعكس شخصيتك بذوقك',
+      shopNow: 'تسوق دلوقتي',
+      exploreMore: 'اعرف أكتر',
+
+      freeShipping: 'شحن ببلاش',
+      freeShippingDesc: 'توصيل سريع لكل المحافظات',
+      customDesign: 'تصميم على مزاجك',
+      customDesignDesc: 'اختار اللون والطباعة والتفاصيل اللي تحبها',
+      highQuality: 'جودة عالية',
+      highQualityDesc: 'خامة محترمة وتشطيب نضيف',
+      securePayment: 'دفع مضمون',
+      securePaymentDesc: 'حماية كاملة للمدفوعات',
+
+      featuredTitle: 'اختياراتنا ليك',
+      viewAll: 'شوف الكل',
+
+      whyUs: 'ليه Nemora؟',
+      testimonials: 'ناس قالت إيه؟',
+
+      brandWord1: 'هوديز مطبوعة',
+      brandWord2: 'طباعة + تطريز',
+
+      journeyTitle: 'رحلة تصميمك',
+      journeySubtitle: 'من الفكرة للتسليم في 4 خطوات بسيطة',
+      step1Title: 'اختار القطعة',
+      step1Desc: 'هودي، تيشيرت، جاكيت',
+      step2Title: 'ظبّط تصميمك',
+      step2Desc: 'ألوان + طباعة + تفاصيل',
+      step3Title: 'مراجعة الجودة',
+      step3Desc: 'تشطيب مظبوط ومعايير عالية',
+      step4Title: 'توصيل سريع',
+      step4Desc: 'يوصل لحد بابك خلال 24–48 ساعة',
+
+      premiumKicker: 'مجموعة Nemora المميزة',
+      artWord: 'فن',
+
+      stats: {
+        clients: 'عميل واثق',
+        designs: 'تصميم مختلف',
+        satisfaction: 'رضا الناس',
+        shipping: 'شحن سريع',
+      },
+
+      processLabel: 'الخطوات'
     },
+
     en: {
       heroTitle: 'Absolute Elegance',
       heroSubtitle: 'Unique pieces crafted to express your personality',
       shopNow: 'Shop Now',
       exploreMore: 'Explore More',
+
       freeShipping: 'Free Shipping',
       freeShippingDesc: 'Fast delivery nationwide',
       customDesign: 'Custom Design',
       customDesignDesc: 'Design your piece your way',
       highQuality: 'Premium Quality',
-      highQualityDesc: '100% Egyptian cotton',
+      highQualityDesc: 'Clean finish & top materials',
       securePayment: 'Secure Payment',
       securePaymentDesc: 'Full protection guaranteed',
+
       featuredTitle: 'Featured Collection',
       viewAll: 'View All',
+
       whyUs: 'Why Nemora?',
       testimonials: 'Customer Reviews',
+
       brandWord1: 'Printed Hoodies',
       brandWord2: 'Printing & Embroidery',
+
       journeyTitle: 'Your Design Journey',
       journeySubtitle: 'From idea to delivery in 4 steps',
       step1Title: 'Pick Your Base',
@@ -236,31 +319,45 @@ export default function Home() {
       step3Title: 'Quality Check',
       step3Desc: 'Precision craftsmanship',
       step4Title: 'Fast Delivery',
-      step4Desc: 'At your door in 24-48h',
-      eg: 'Egyptian',
-      ar: 'Arabic',
-      en: 'English'
+      step4Desc: 'At your door in 24–48h',
+
+      premiumKicker: 'Nemora Premium Collection',
+      artWord: 'Art',
+
+      stats: {
+        clients: 'Trusted Clients',
+        designs: 'Unique Designs',
+        satisfaction: 'Satisfaction',
+        shipping: 'Fast Shipping',
+      },
+
+      processLabel: 'PROCESS'
     }
   };
 
-  const t = content[language] || content.ar;
-  const journeySteps = [
-    { icon: <Package size={28} />, title: t.step1Title, desc: t.step1Desc },
-    { icon: <Palette size={28} />, title: t.step2Title, desc: t.step2Desc },
-    { icon: <CheckCircle size={28} />, title: t.step3Title, desc: t.step3Desc },
-    { icon: <Clock size={28} />, title: t.step4Title, desc: t.step4Desc }
-  ];
+  const copy = content[lang] || content.ar;
 
-  const testimonialsByLang = {
+  const journeySteps = useMemo(
+    () => [
+      { icon: <Package size={28} />, title: copy.step1Title, desc: copy.step1Desc },
+      { icon: <Palette size={28} />, title: copy.step2Title, desc: copy.step2Desc },
+      { icon: <CheckCircle size={28} />, title: copy.step3Title, desc: copy.step3Desc },
+      { icon: <Clock size={28} />, title: copy.step4Title, desc: copy.step4Desc }
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [lang]
+  );
+
+  const testimonialsByLang: Record<Lang, Testimonial[]> = {
     ar: [
       { name: 'سارة محمد', text: 'الخامة ممتازة والتفاصيل دقيقة. التوصيل كان سريع جدًا.', rating: 5, avatar: 'س م' },
       { name: 'أحمد علاء', text: 'القطعة شكلها أحلى من الصور والتطريز متقن جدًا.', rating: 5, avatar: 'أ ع' },
       { name: 'نهى كريم', text: 'خدمة العملاء محترمة والتبديل كان سهل وسريع.', rating: 5, avatar: 'ن ك' }
     ],
     eg: [
-      { name: 'سارة محمد', text: 'الخامة تحفة والتفاصيل مظبوطة، والتوصيل جه بسرعة.', rating: 5, avatar: 'س م' },
-      { name: 'أحمد علاء', text: 'القطعة شكلها أحلى من الصور والتطريز جامد جدًا.', rating: 5, avatar: 'أ ع' },
-      { name: 'نهى كريم', text: 'الدعم رد بسرعة والتبديل كان سهل جدًا.', rating: 5, avatar: 'ن ك' }
+      { name: 'سارة محمد', text: 'الخامة تحفة والتفاصيل مظبوطة… والتوصيل جه بسرعة.', rating: 5, avatar: 'س م' },
+      { name: 'أحمد علاء', text: 'القطعة طلعت أحلى من الصور بكتير… والتطريز جامد.', rating: 5, avatar: 'أ ع' },
+      { name: 'نهى كريم', text: 'الدعم رد بسرعة والتبديل اتعمل من غير وجع دماغ.', rating: 5, avatar: 'ن ك' }
     ],
     en: [
       { name: 'Sarah M.', text: 'Premium fabric and clean stitching. Delivered fast and neatly packed.', rating: 5, avatar: 'SM' },
@@ -269,9 +366,7 @@ export default function Home() {
     ]
   };
 
-  const testimonials = testimonialsByLang[language] || testimonialsByLang.ar;
-
-
+  const testimonials = testimonialsByLang[lang] || testimonialsByLang.ar;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -282,7 +377,20 @@ export default function Home() {
 
   useEffect(() => {
     setActiveTestimonial(0);
-  }, [language]);
+  }, [lang]);
+
+  // ✅ تثبيت الـ random shapes (عشان ما يتغيروش كل رندر)
+  const floatingShapes = useMemo(() => {
+    return Array.from({ length: 5 }).map((_, i) => ({
+      i,
+      size: 200 + i * 50,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      x1: Math.random() * 100 - 50,
+      y1: Math.random() * 100 - 50,
+      duration: 10 + i * 2,
+    }));
+  }, []);
 
   return (
     <div style={{ background: 'var(--bg-main)', color: 'var(--text-main)', overflowX: 'hidden' }} dir={dir}>
@@ -293,71 +401,6 @@ export default function Home() {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Cairo', sans-serif;
           background: var(--bg-main);
           color: var(--text-main);
-        }
-
-        .logo-intro {
-          position: relative;
-          padding: 70px 7% 20px;
-          display: flex;
-          justify-content: center;
-        }
-
-        .logo-shell {
-          position: relative;
-          display: flex;
-          align-items: center;
-          gap: 24px;
-          padding: 24px 36px;
-          border-radius: 32px;
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          box-shadow: var(--shadow-md);
-          overflow: hidden;
-        }
-
-        .logo-shell::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(circle at top right, var(--primary-soft), transparent 60%);
-          opacity: 0.6;
-          pointer-events: none;
-        }
-
-        .logo-badge {
-          width: 90px;
-          height: 90px;
-          border-radius: 24px;
-          background: var(--bg-secondary);
-          display: grid;
-          place-items: center;
-          box-shadow: var(--shadow-sm);
-        }
-
-        .logo-badge img {
-          width: 76px;
-          height: 76px;
-          object-fit: contain;
-          filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.3));
-        }
-
-        .logo-words {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          z-index: 1;
-        }
-
-        .logo-words span:first-child {
-          font-weight: 900;
-          font-size: 1.4rem;
-          color: var(--text-main);
-        }
-
-        .logo-words span:last-child {
-          font-weight: 700;
-          font-size: 1rem;
-          color: var(--text-muted);
         }
 
         .logo-intro {
@@ -428,18 +471,8 @@ export default function Home() {
           color: var(--text-muted);
         }
           
-        .home-section {
-          padding: 100px 7%;
-        }
-
-        .home-section-alt {
-          background: var(--bg-secondary);
-        }
-
-        @keyframes logo-float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
+        .home-section { padding: 100px 7%; }
+        .home-section-alt { background: var(--bg-secondary); }
 
         .hero-section {
           position: relative;
@@ -516,13 +549,7 @@ export default function Home() {
           animation: swash-breathe 10s ease-in-out infinite;
         }
 
-        .sparkle-field {
-          position: absolute;
-          inset: 0;
-          z-index: 3;
-          pointer-events: none;
-        }
-
+        .sparkle-field { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
         .sparkle {
           position: absolute;
           width: 6px;
@@ -562,14 +589,7 @@ export default function Home() {
                       radial-gradient(circle at 80% 50%, var(--primary-glow), transparent 50%);
         }
 
-        .floating-shapes {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          z-index: 2;
-        }
-
+        .floating-shapes { position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: 2; }
         .shape {
           position: absolute;
           background: linear-gradient(135deg, var(--primary-soft), var(--primary-soft));
@@ -622,11 +642,7 @@ export default function Home() {
           pointer-events: none;
         }
 
-        .hero-media-img {
-          display: block;
-          width: 100%;
-          border-radius: 26px;
-        }
+        .hero-media-img { display: block; width: 100%; border-radius: 26px; }
 
         .hero-media-chip {
           position: absolute;
@@ -659,22 +675,11 @@ export default function Home() {
           flex-shrink: 0;
         }
 
-        .hero-media-chip-title {
-          font-weight: 800;
-          font-size: 0.95rem;
-          color: var(--text-main);
-        }
-
-        .hero-media-chip-subtitle {
-          font-weight: 600;
-          font-size: 0.8rem;
-          color: var(--text-muted);
-        }
+        .hero-media-chip-title { font-weight: 800; font-size: 0.95rem; color: var(--text-main); }
+        .hero-media-chip-subtitle { font-weight: 600; font-size: 0.8rem; color: var(--text-muted); }
 
         [data-theme='light'] .video-container video,
-        body.light .video-container video {
-          opacity: 0.45;
-        }
+        body.light .video-container video { opacity: 0.45; }
 
         [data-theme='light'] .video-overlay,
         body.light .video-overlay {
@@ -686,304 +691,6 @@ export default function Home() {
           background: rgba(255, 255, 255, 0.82);
           border: 1px solid rgba(43, 32, 24, 0.08);
           box-shadow: 0 25px 50px -20px rgba(43, 32, 24, 0.18);
-        }
-
-        .product-card {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 25px;
-          overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-        }
-
-        .product-card:hover {
-          transform: translateY(-10px) scale(1.02);
-          border-color: rgba(199, 119, 47, 0.5);
-          box-shadow: 0 30px 60px rgba(199, 119, 47, 0.3);
-        }
-
-        .featured-product-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 30px;
-        }
-
-        .product-badge {
-          position: absolute;
-          top: 15px;
-          ${isAr ? 'left: 15px;' : 'right: 15px;'}
-          background: var(--gradient-primary);
-          padding: 6px 16px;
-          border-radius: 50px;
-          font-size: 0.75rem;
-          font-weight: 700;
-          z-index: 10;
-          text-transform: uppercase;
-        }
-
-        .capability-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-
-        .capability-card {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 22px;
-          padding: 22px;
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .capability-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 14px;
-          background: var(--primary-soft);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--primary);
-        }
-
-        .filters-row {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-
-        .filter-group {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 20px;
-          padding: 18px;
-        }
-
-        .filter-label {
-          font-weight: 700;
-          color: var(--text-muted);
-          letter-spacing: 0.5px;
-          margin-bottom: 12px;
-          text-transform: uppercase;
-          font-size: 0.75rem;
-        }
-
-        .filter-chips {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-
-        .filter-chip {
-          background: var(--bg-hover);
-          border: 1px solid var(--border);
-          border-radius: 999px;
-          padding: 8px 14px;
-          font-weight: 600;
-          cursor: pointer;
-          color: var(--text-secondary);
-          transition: all 0.2s ease;
-        }
-
-        .filter-chip:hover {
-          border-color: var(--primary);
-        }
-
-        .filter-chip.active {
-          background: var(--gradient-primary);
-          color: white;
-          border-color: transparent;
-        }
-
-        .filter-select {
-          width: 100%;
-          background: var(--bg-hover);
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          padding: 10px 14px;
-          color: var(--text-main);
-          font-weight: 600;
-        }
-
-        .upload-card {
-          background: var(--bg-card);
-          border: 1px dashed var(--border);
-          border-radius: 22px;
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .upload-actions {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          flex-wrap: wrap;
-        }
-
-        .upload-button {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .upload-input {
-          position: absolute;
-          inset: 0;
-          opacity: 0;
-          cursor: pointer;
-        }
-
-        .upload-filename {
-          color: var(--text-muted);
-          font-size: 0.9rem;
-        }
-
-        .no-results {
-          text-align: center;
-          padding: 40px;
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 22px;
-        }
-
-        .chatbot-shell {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 24px;
-          padding: 28px;
-          display: grid;
-          gap: 18px;
-        }
-
-        .chatbot-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-        }
-
-        .chatbot-title {
-          font-weight: 900;
-          font-size: 1.6rem;
-        }
-
-        .chatbot-subtitle {
-          color: var(--text-muted);
-          margin-top: 6px;
-        }
-
-        .chatbot-icon {
-          color: var(--primary);
-        }
-
-        .chat-faq {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-          gap: 10px;
-        }
-
-        .chat-faq-btn {
-          background: var(--bg-secondary);
-          border: 1px solid var(--border);
-          color: var(--text-main);
-          padding: 10px 12px;
-          border-radius: 12px;
-          text-align: start;
-          font-weight: 700;
-          line-height: 1.4;
-          cursor: pointer;
-          transition: 0.2s ease;
-        }
-
-        .chat-faq-btn:hover {
-          border-color: var(--primary);
-          color: var(--primary);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(199, 119, 47, 0.15);
-        }
-
-        .chat-faq-btn.active {
-          border-color: var(--primary);
-          background: var(--bg-hover);
-          color: var(--primary);
-          box-shadow: 0 12px 24px rgba(199, 119, 47, 0.18);
-        }
-
-        .chat-faq-btn:active {
-          transform: translateY(0) scale(0.98);
-        }
-
-        .chat-faq-btn:focus-visible {
-          outline: 2px solid var(--primary);
-          outline-offset: 2px;
-        }
-
-        .chat-messages {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          max-height: 320px;
-          overflow: auto;
-          padding-right: 6px;
-          scroll-behavior: smooth;
-        }
-
-        .chat-bubble {
-          padding: 12px 16px;
-          border-radius: 16px;
-          max-width: 80%;
-          line-height: 1.6;
-          white-space: pre-line;
-          word-break: break-word;
-        }
-
-        .chat-bubble.bot {
-          background: var(--bg-hover);
-          border: 1px solid var(--border);
-          align-self: flex-start;
-        }
-
-        .chat-bubble.user {
-          background: var(--gradient-primary);
-          color: white;
-          align-self: flex-end;
-        }
-
-        .chat-bubble.new {
-          border-color: var(--primary);
-          box-shadow: 0 0 0 2px rgba(199, 119, 47, 0.18), 0 18px 35px rgba(199, 119, 47, 0.22);
-          animation: chat-pop 0.25s ease, chat-glow 1.2s ease;
-        }
-
-        .chat-input-row {
-          display: flex;
-          gap: 10px;
-        }
-
-        .chat-input {
-          flex: 1;
-          background: var(--bg-hover);
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          padding: 12px 14px;
-          color: var(--text-main);
-          font-weight: 600;
-        }
-
-        @keyframes chat-pop {
-          from { transform: scale(0.98); }
-          to { transform: scale(1); }
-        }
-
-        @keyframes chat-glow {
-          0% { box-shadow: 0 0 0 0 rgba(199, 119, 47, 0.2); }
-          100% { box-shadow: 0 0 0 14px rgba(199, 119, 47, 0); }
         }
 
         .btn-primary {
@@ -1022,9 +729,24 @@ export default function Home() {
           text-decoration: none;
         }
 
-        .btn-secondary:hover {
-          border-color: var(--primary);
-          background: var(--primary-soft);
+        .btn-secondary:hover { border-color: var(--primary); background: var(--primary-soft); }
+
+        .stats-container {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 30px;
+          margin: -80px 7% 80px;
+          position: relative;
+          z-index: 10;
+        }
+
+        .stat-card {
+          background: var(--bg-card);
+          backdrop-filter: blur(20px);
+          border: 1px solid var(--border);
+          border-radius: 20px;
+          padding: 35px;
+          text-align: center;
         }
 
         .feature-grid {
@@ -1048,22 +770,38 @@ export default function Home() {
           transform: translateY(-5px);
         }
 
-        .stats-container {
+        .featured-product-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
           gap: 30px;
-          margin: -80px 7% 80px;
-          position: relative;
-          z-index: 10;
         }
 
-        .stat-card {
+        .product-card {
           background: var(--bg-card);
-          backdrop-filter: blur(20px);
           border: 1px solid var(--border);
-          border-radius: 20px;
-          padding: 35px;
-          text-align: center;
+          border-radius: 25px;
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+        }
+
+        .product-card:hover {
+          transform: translateY(-10px) scale(1.02);
+          border-color: rgba(199, 119, 47, 0.5);
+          box-shadow: 0 30px 60px rgba(199, 119, 47, 0.3);
+        }
+
+        .product-badge {
+          position: absolute;
+          top: 15px;
+          ${isAr ? 'left: 15px;' : 'right: 15px;'}
+          background: var(--gradient-primary);
+          padding: 6px 16px;
+          border-radius: 50px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          z-index: 10;
+          text-transform: uppercase;
         }
 
         .rating-pill {
@@ -1076,6 +814,7 @@ export default function Home() {
           padding: 6px 12px;
           font-size: 0.85rem;
           color: var(--text-secondary);
+          white-space: nowrap;
         }
 
         .journey-card {
@@ -1115,6 +854,7 @@ export default function Home() {
           font-size: 4rem;
           color: var(--border-light);
           font-weight: 800;
+          opacity: 0.6;
         }
 
         .testimonial-dot {
@@ -1170,21 +910,7 @@ export default function Home() {
           line-height: 1.7;
         }
 
-        .hoodie-actions {
-          display: flex;
-          gap: 14px;
-          flex-wrap: wrap;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
+        .hoodie-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
         @media (max-width: 968px) {
           .hero-grid { 
@@ -1192,13 +918,8 @@ export default function Home() {
             justify-items: center;
             text-align: center;
           }
-          .hero-glass {
-            margin: 0 auto;
-          }
-          .hero-kicker,
-          .hero-actions {
-            justify-content: center;
-          }
+          .hero-glass { margin: 0 auto; }
+          .hero-kicker, .hero-actions { justify-content: center; }
           .glass-card { padding: 30px; }
           .testimonial-shell { grid-template-columns: 1fr; }
           .hoodie-card { flex-direction: column; text-align: center; }
@@ -1209,127 +930,47 @@ export default function Home() {
         }
 
         @media (max-width: 768px) {
-          .home-section {
-            padding: 70px 6% !important;
-          }
+          .home-section { padding: 70px 6% !important; }
+          .logo-intro { padding: 60px 6% 10px; }
+          .logo-shell { padding: 20px 24px; border-radius: 24px; }
+          .logo-badge { width: 70px; height: 70px; }
+          .logo-badge img { width: 58px; height: 58px; }
 
-          .logo-intro {
-            padding: 60px 6% 10px;
-          }
+          .hero-grid { gap: 40px !important; padding: 0 6% !important; text-align: center; }
+          .hero-glass { max-width: 100%; padding: 28px; margin: 0 auto; text-align: center; }
+          .hero-glass h1 { font-size: clamp(2.1rem, 8vw, 3rem) !important; }
+          .hero-glass p { font-size: 1.05rem !important; margin-bottom: 28px !important; }
+          .hero-kicker, .hero-actions { justify-content: center; }
+          .hero-actions { width: 100%; }
+          .hero-grid .btn-primary, .hero-grid .btn-secondary { width: 100%; justify-content: center; }
 
-          .logo-shell {
-            padding: 20px 24px;
-            border-radius: 24px;
-          }
-
-          .logo-badge {
-            width: 70px;
-            height: 70px;
-          }
-
-          .logo-badge img {
-            width: 58px;
-            height: 58px;
-          }
-
-          .hero-grid {
-            gap: 40px !important;
-            padding: 0 6% !important;
-            text-align: center;
-          }
-
-          .hero-glass {
-            max-width: 100%;
-            padding: 28px;
-            margin: 0 auto;
-            text-align: center;
-          }
-
-          .hero-glass h1 {
-            font-size: clamp(2.1rem, 8vw, 3rem) !important;
-          }
-
-          .hero-glass p {
-            font-size: 1.05rem !important;
-            margin-bottom: 28px !important;
-          }
-
-          .hero-kicker,
-          .hero-actions {
-            justify-content: center;
-          }
-
-          .hero-actions {
-            width: 100%;
-          }
-
-          .hero-grid .btn-primary,
-          .hero-grid .btn-secondary {
-            width: 100%;
-            justify-content: center;
-          }
-
-          .hero-media-card {
-            width: min(340px, 92vw);
-          }
-
-          .hero-media-chip {
-            margin: 14px auto 0;
-          }
+          .hero-media-card { width: min(340px, 92vw); }
+          .hero-media-chip { margin: 14px auto 0; }
 
           .stats-container {
             margin: -60px 6% 60px;
             gap: 16px;
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
+          .stat-card { padding: 24px; }
 
-          .stat-card {
-            padding: 24px;
-          }
+          .feature-card { padding: 28px; }
+          .feature-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
 
-          .feature-card {
-            padding: 28px;
-          }
+          .featured-product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px; }
+          .product-card img { height: 260px !important; }
 
-          .feature-grid {
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 22px;
-          }
-
-          .featured-product-grid {
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 22px;
-          }
-
-          .product-card img {
-            height: 260px !important;
-          }
-
-          .testimonial-card {
-            padding: 30px;
-          }
-
-          .testimonial-quote {
-            font-size: 3rem;
-          }
-
+          .testimonial-card { padding: 30px; }
+          .testimonial-quote { font-size: 3rem; }
         }
 
         @media (max-width: 520px) {
-          .feature-grid,
-          .featured-product-grid {
-            grid-template-columns: 1fr;
-            gap: 18px;
-          }
-
-          .product-card img {
-            height: 220px !important;
-          }
+          .feature-grid, .featured-product-grid { grid-template-columns: 1fr; gap: 18px; }
+          .product-card img { height: 220px !important; }
         }
       `}</style>
 
-
-      {/* Logo intro card with brand words. */}
+      {/* Logo intro */}
       <section className="logo-intro">
         <motion.div
           className="logo-shell"
@@ -1344,42 +985,39 @@ export default function Home() {
           >
             <img src="/assets/images/Gemini_Generated_Image_j8n8etj8n8etj8n8.png" alt="Nemora logo" />
           </motion.div>
+
           <motion.div
             className="logo-words"
             initial={{ opacity: 0, x: isAr ? 20 : -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            <span>{t.brandWord1}</span>
-            <span>{t.brandWord2}</span>
+            <span>{copy.brandWord1}</span>
+            <span>{copy.brandWord2}</span>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Hero section with background video and CTA. */}
+      {/* Hero */}
       <section className="hero-section">
         <div className="video-container">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/assets/images/Gemini_Generated_Image_j8n8etj8n8etj8n8.png"
-          >
+          <video autoPlay muted loop playsInline poster="/assets/images/Gemini_Generated_Image_j8n8etj8n8etj8n8.png">
             <source src={videoUrl} type="video/mp4" />
           </video>
           <div className="video-overlay" />
         </div>
+
         <div className="fabric-swash" />
         <div className="stitch-lines" />
         <div className="needle-sweep" />
+
         <div className="sparkle-field">
           {[...Array(10)].map((_, i) => (
             <span
               key={i}
               className="sparkle"
               style={{
-                top: `${10 + (i * 8)}%`,
+                top: `${10 + i * 8}%`,
                 left: `${(i * 9) % 100}%`,
                 animationDelay: `${i * 0.3}s`,
                 animationDuration: `${4 + (i % 4)}s`
@@ -1387,117 +1025,118 @@ export default function Home() {
             />
           ))}
         </div>
+
         <motion.div className="animated-bg" style={{ scale: scaleProgress, opacity: opacityProgress }} />
+
         <div className="floating-shapes">
-          {[...Array(5)].map((_, i) => (
+          {floatingShapes.map((s) => (
             <motion.div
-              key={i}
+              key={s.i}
               className="shape"
               style={{
-                width: `${200 + i * 50}px`,
-                height: `${200 + i * 50}px`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
+                width: `${s.size}px`,
+                height: `${s.size}px`,
+                top: `${s.top}%`,
+                left: `${s.left}%`,
               }}
-              animate={{
-                x: [0, Math.random() * 100 - 50, 0],
-                y: [0, Math.random() * 100 - 50, 0],
-              }}
-              transition={{
-                duration: 10 + i * 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+              animate={{ x: [0, s.x1, 0], y: [0, s.y1, 0] }}
+              transition={{ duration: s.duration, repeat: Infinity, ease: 'easeInOut' }}
             />
           ))}
         </div>
 
-        <div style={{ 
-          position: 'relative', 
-          zIndex: 3, 
-          width: '100%', 
-          padding: '0 7%',
-          display: 'grid',
-          gridTemplateColumns: '1.2fr 0.8fr',
-          gap: '90px',
-          alignItems: 'center'
-        }} className="hero-grid">
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 3,
+            width: '100%',
+            padding: '0 7%',
+            display: 'grid',
+            gridTemplateColumns: '1.2fr 0.8fr',
+            gap: '90px',
+            alignItems: 'center'
+          }}
+          className="hero-grid"
+        >
           <motion.div
             initial={{ opacity: 0, x: isAr ? 100 : -100 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{ duration: 1, ease: 'easeOut' }}
           >
             <div className="glass-card hero-glass">
-            <motion.div
-              className="hero-kicker"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '10px', 
-                marginBottom: '20px',
-                color: 'var(--primary)'
-              }}
-            >
-              <Flame size={24} />
-              <span style={{ fontWeight: 'bold', letterSpacing: '2px', fontSize: '0.9rem' }}>
-                {isAr ? '\u0645\u062c\u0645\u0648\u0639\u0629 \u0646\u0645\u0648\u0631\u0627 \u0627\u0644\u0645\u0645\u064a\u0632\u0629' : 'NEMORA PREMIUM COLLECTION'}
-              </span>
-            </motion.div>
+              <motion.div
+                className="hero-kicker"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  marginBottom: '20px',
+                  color: 'var(--primary)'
+                }}
+              >
+                <Flame size={24} />
+                <span style={{ fontWeight: 'bold', letterSpacing: '2px', fontSize: '0.9rem' }}>
+                  {copy.premiumKicker}{' '}
+                  <span style={{ color: 'var(--primary)' }}>{copy.artWord}</span>
+                </span>
+              </motion.div>
 
-            <motion.h1
-              style={{
-                fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-                fontWeight: 900,
-                lineHeight: 1.1,
-                marginBottom: '25px'
-              }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              {isAr ? '\u0641\u0646' : 'THE ART OF '}
-              <br />
-              <span style={{
-                background: 'var(--gradient-primary)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                {t.heroTitle}
-              </span>
-            </motion.h1>
+              <motion.h1
+                style={{
+                  fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+                  fontWeight: 900,
+                  lineHeight: 1.1,
+                  marginBottom: '25px'
+                }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                {isAr ? 'فن' : 'THE ART OF '}
+                <br />
+                <span
+                  style={{
+                    background: 'var(--gradient-primary)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  {copy.heroTitle}
+                </span>
+              </motion.h1>
 
-            <motion.p
-              style={{
-                fontSize: '1.3rem',
-                color: 'var(--text-secondary)',
-                marginBottom: '40px',
-                lineHeight: 1.7
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
-              {t.heroSubtitle}
-            </motion.p>
+              <motion.p
+                style={{
+                  fontSize: '1.3rem',
+                  color: 'var(--text-secondary)',
+                  marginBottom: '40px',
+                  lineHeight: 1.7
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                {copy.heroSubtitle}
+              </motion.p>
 
-            <motion.div
-              className="hero-actions"
-              style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-            >
-              <Link className="btn-primary" to="/products">
-                {t.shopNow} <ShoppingBag size={20} />
-              </Link>
-              <Link className="btn-secondary" to="/about">
-                {t.exploreMore} <ArrowRight size={20} />
-              </Link>
-            </motion.div>
+              <motion.div
+                className="hero-actions"
+                style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+              >
+                <Link className="btn-primary" to="/products">
+                  {copy.shopNow} <ShoppingBag size={20} />
+                </Link>
+                <Link className="btn-secondary" to="/about">
+                  {copy.exploreMore} <ArrowRight size={20} style={{ transform: isAr ? 'rotate(180deg)' : 'none' }} />
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
 
@@ -1534,21 +1173,21 @@ export default function Home() {
                 <Sparkles size={18} />
               </div>
               <div>
-                <div className="hero-media-chip-title">{t.brandWord1}</div>
-                <div className="hero-media-chip-subtitle">{t.brandWord2}</div>
+                <div className="hero-media-chip-title">{copy.brandWord1}</div>
+                <div className="hero-media-chip-subtitle">{copy.brandWord2}</div>
               </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Key stats highlights. */}
+      {/* Stats */}
       <div className="stats-container">
         {[
-          { icon: <Users size={30} />, value: 15000, suffix: 'K+', label: isAr ? 'عميل واثق' : 'Trusted Clients' },
-          { icon: <Award size={30} />, value: 450, suffix: '+', label: isAr ? 'تصميم فريد' : 'Unique Designs' },
-          { icon: <Star size={30} />, value: 100, suffix: '%', label: isAr ? 'رضا العملاء' : 'Satisfaction' },
-          { icon: <Truck size={30} />, value: 24, suffix: 'H', label: isAr ? 'شحن سريع' : 'Fast Shipping' }
+          { icon: <Users size={30} />, value: 15, suffix: 'K+', label: copy.stats.clients },
+          { icon: <Award size={30} />, value: 450, suffix: '+', label: copy.stats.designs },
+          { icon: <Star size={30} />, value: 100, suffix: '%', label: copy.stats.satisfaction },
+          { icon: <Truck size={30} />, value: 24, suffix: 'H', label: copy.stats.shipping }
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -1571,30 +1210,36 @@ export default function Home() {
             >
               {stat.icon}
             </motion.div>
-            <div style={{
-              fontSize: '2.5rem',
-              fontWeight: 900,
-              background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              marginBottom: '10px'
-            }}>
+
+            <div
+              style={{
+                fontSize: '2.5rem',
+                fontWeight: 900,
+                background: 'var(--gradient-primary)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                marginBottom: '10px'
+              }}
+            >
               <Counter value={stat.value} suffix={stat.suffix} />
             </div>
-            <div style={{
-              fontSize: '0.9rem',
-              color: 'var(--text-muted)',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}>
+
+            <div
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--text-muted)',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}
+            >
               {stat.label}
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Value proposition feature cards. */}
+      {/* Why Us */}
       <section className="home-section">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -1602,27 +1247,25 @@ export default function Home() {
           viewport={{ once: true }}
           style={{ textAlign: 'center', marginBottom: '70px' }}
         >
-          <h2 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 900,
-            marginBottom: '20px'
-          }}>
-            {t.whyUs}
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '20px' }}>
+            {copy.whyUs}
           </h2>
-          <div style={{
-            width: '100px',
-            height: '4px',
-            background: 'linear-gradient(90deg, var(--primary), var(--primary-hover))',
-            margin: '0 auto'
-          }} />
+          <div
+            style={{
+              width: '100px',
+              height: '4px',
+              background: 'linear-gradient(90deg, var(--primary), var(--primary-hover))',
+              margin: '0 auto'
+            }}
+          />
         </motion.div>
 
         <div className="feature-grid">
           {[
-            { icon: <Truck size={40} />, title: t.freeShipping, desc: t.freeShippingDesc, color: 'var(--primary)', bg: 'var(--primary-soft)' },
-            { icon: <Palette size={40} />, title: t.customDesign, desc: t.customDesignDesc, color: 'var(--primary-hover)', bg: 'var(--primary-soft)' },
-            { icon: <Sparkles size={40} />, title: t.highQuality, desc: t.highQualityDesc, color: 'var(--primary)', bg: 'var(--primary-soft)' },
-            { icon: <ShieldCheck size={40} />, title: t.securePayment, desc: t.securePaymentDesc, color: 'var(--primary-hover)', bg: 'var(--primary-soft)' }
+            { icon: <Truck size={40} />, title: copy.freeShipping, desc: copy.freeShippingDesc, color: 'var(--primary)', bg: 'var(--primary-soft)' },
+            { icon: <Palette size={40} />, title: copy.customDesign, desc: copy.customDesignDesc, color: 'var(--primary-hover)', bg: 'var(--primary-soft)' },
+            { icon: <Sparkles size={40} />, title: copy.highQuality, desc: copy.highQualityDesc, color: 'var(--primary)', bg: 'var(--primary-soft)' },
+            { icon: <ShieldCheck size={40} />, title: copy.securePayment, desc: copy.securePaymentDesc, color: 'var(--primary-hover)', bg: 'var(--primary-soft)' }
           ].map((feature, i) => (
             <motion.div
               key={i}
@@ -1650,56 +1293,42 @@ export default function Home() {
               >
                 {feature.icon}
               </motion.div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '15px' }}>
-                {feature.title}
-              </h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                {feature.desc}
-              </p>
+
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '15px' }}>{feature.title}</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>{feature.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Featured product grid. */}
+      {/* Featured */}
       <section className="home-section home-section-alt">
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '60px',
-          flexWrap: 'wrap',
-          gap: '20px'
-        }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '60px', flexWrap: 'wrap', gap: '20px' }}>
           <div>
             <motion.h2
               initial={{ opacity: 0, x: isAr ? 50 : -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              style={{
-                fontSize: 'clamp(2rem, 5vw, 3rem)',
-                fontWeight: 900,
-                marginBottom: '15px'
-              }}
+              style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, marginBottom: '15px' }}
             >
-              {t.featuredTitle}
+              {copy.featuredTitle}
             </motion.h2>
+
             <motion.div
               initial={{ width: 0 }}
               whileInView={{ width: '100px' }}
               viewport={{ once: true }}
-              style={{
-                height: '4px',
-                background: 'linear-gradient(90deg, var(--primary), var(--primary-hover))'
-              }}
+              style={{ height: '4px', background: 'linear-gradient(90deg, var(--primary), var(--primary-hover))' }}
             />
           </div>
+
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link className="btn-secondary" to="/products">
-              {t.viewAll} <ArrowRight size={20} />
+              {copy.viewAll} <ArrowRight size={20} style={{ transform: isAr ? 'rotate(180deg)' : 'none' }} />
             </Link>
           </motion.div>
         </div>
+
         <div className="featured-product-grid">
           {products.map((product, i) => (
             <motion.div
@@ -1711,6 +1340,7 @@ export default function Home() {
               transition={{ delay: i * 0.1 }}
             >
               <div className="product-badge">{product.badge}</div>
+
               <div style={{ position: 'relative', overflow: 'hidden' }}>
                 <motion.img
                   src={product.image}
@@ -1719,6 +1349,7 @@ export default function Home() {
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.4 }}
                 />
+
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
@@ -1736,41 +1367,36 @@ export default function Home() {
                 >
                   <motion.div whileHover={{ scale: 1.1 }}>
                     <Link className="btn-primary" to={`/products/${product.id}`} style={{ padding: '15px 30px' }}>
-                      <ShoppingBag size={20} /> {t.shopNow}
+                      <ShoppingBag size={20} /> {copy.shopNow}
                     </Link>
                   </motion.div>
                 </motion.div>
               </div>
+
               <div style={{ padding: '25px' }}>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '12px',
-                  gap: '10px'
-                }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '10px' }}>
                   <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>{product.name}</div>
                   <div className="rating-pill">
                     <Star size={14} />
                     {product.rating}
                   </div>
                 </div>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  color: 'var(--text-secondary)'
-                }}>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-secondary)' }}>
                   <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>EGP {product.price}</div>
+
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {Array.from({ length: 5 }).map((_, idx) => (
-                      <Star
-                        key={idx}
-                        size={14}
-                        color={idx < Math.round(product.rating) ? 'var(--primary-hover)' : 'var(--border)'}
-                        fill={idx < Math.round(product.rating) ? 'var(--primary-hover)' : 'transparent'}
-                      />
-                    ))}
+                    {Array.from({ length: 5 }).map((_, idx) => {
+                      const filled = idx < Math.round(product.rating);
+                      return (
+                        <Star
+                          key={idx}
+                          size={14}
+                          color={filled ? 'var(--primary-hover)' : 'var(--border)'}
+                          fill={filled ? 'var(--primary-hover)' : 'transparent'}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -1779,7 +1405,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Four-step journey section. */}
+      {/* Journey */}
       <section className="home-section">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -1787,36 +1413,30 @@ export default function Home() {
           viewport={{ once: true }}
           style={{ textAlign: 'center', marginBottom: '60px' }}
         >
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: 'var(--primary-hover)',
-            marginBottom: '12px',
-            letterSpacing: '2px',
-            fontSize: '0.8rem',
-            fontWeight: 700
-          }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'var(--primary-hover)',
+              marginBottom: '12px',
+              letterSpacing: '2px',
+              fontSize: '0.8rem',
+              fontWeight: 700
+            }}
+          >
             <Zap size={18} />
-            {isAr ? 'العملية' : 'PROCESS'}
+            {copy.processLabel}
           </div>
-          <h2 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.2rem)',
-            fontWeight: 900,
-            marginBottom: '15px'
-          }}>
-            {t.journeyTitle}
+
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900, marginBottom: '15px' }}>
+            {copy.journeyTitle}
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>
-            {t.journeySubtitle}
-          </p>
+
+          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>{copy.journeySubtitle}</p>
         </motion.div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-          gap: '25px'
-        }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '25px' }}>
           {journeySteps.map((step, i) => (
             <motion.div
               key={i}
@@ -1826,31 +1446,30 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <div style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '16px',
-                background: 'var(--bg-hover)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--primary)',
-                marginBottom: '18px'
-              }}>
+              <div
+                style={{
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '16px',
+                  background: 'var(--bg-hover)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  marginBottom: '18px'
+                }}
+              >
                 {step.icon}
               </div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '10px' }}>
-                {step.title}
-              </h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                {step.desc}
-              </p>
+
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '10px' }}>{step.title}</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>{step.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Rotating testimonials. */}
+      {/* Testimonials */}
       <section className="home-section home-section-alt">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -1858,19 +1477,10 @@ export default function Home() {
           viewport={{ once: true }}
           style={{ textAlign: 'center', marginBottom: '60px' }}
         >
-          <h2 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.2rem)',
-            fontWeight: 900,
-            marginBottom: '15px'
-          }}>
-            {t.testimonials}
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900, marginBottom: '15px' }}>
+            {copy.testimonials}
           </h2>
-          <div style={{
-            width: '90px',
-            height: '4px',
-            background: 'linear-gradient(90deg, var(--primary), var(--primary-hover))',
-            margin: '0 auto'
-          }} />
+          <div style={{ width: '90px', height: '4px', background: 'linear-gradient(90deg, var(--primary), var(--primary-hover))', margin: '0 auto' }} />
         </motion.div>
 
         <div className="testimonial-shell">
@@ -1881,28 +1491,28 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="testimonial-quote">?</div>
-            <p style={{
-              fontSize: '1.1rem',
-              lineHeight: 1.8,
-              color: 'var(--text-secondary)',
-              marginBottom: '25px'
-            }}>
+            <div className="testimonial-quote">❝</div>
+
+            <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-secondary)', marginBottom: '25px' }}>
               {testimonials[activeTestimonial].text}
             </p>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '50%',
-                background: 'var(--gradient-primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800
-              }}>
+              <div
+                style={{
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '50%',
+                  background: 'var(--gradient-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 800
+                }}
+              >
                 {testimonials[activeTestimonial].avatar}
               </div>
+
               <div>
                 <div style={{ fontWeight: 800 }}>{testimonials[activeTestimonial].name}</div>
                 <div style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
@@ -1931,29 +1541,21 @@ export default function Home() {
                   cursor: 'pointer'
                 }}
               >
-                <div style={{ fontWeight: 700, marginBottom: '6px' }}>{item.name}</div>
-                <div style={{
-                  color: 'var(--text-muted)',
-                  fontSize: '0.9rem',
-                  lineHeight: 1.5,
-                  maxHeight: '2.7em',
-                  overflow: 'hidden'
-                }}>
+                <div style={{ fontWeight: 800, marginBottom: '6px' }}>{item.name}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.5, maxHeight: '2.7em', overflow: 'hidden' }}>
                   {item.text}
                 </div>
               </motion.button>
             ))}
-            <div style={{
-              display: 'flex',
-              gap: '10px',
-              justifyContent: isAr ? 'flex-start' : 'flex-end'
-            }}>
+
+            <div style={{ display: 'flex', gap: '10px', justifyContent: isAr ? 'flex-start' : 'flex-end' }}>
               {testimonials.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   className={`testimonial-dot ${i === activeTestimonial ? 'active' : ''}`}
                   onClick={() => setActiveTestimonial(i)}
+                  aria-label={`testimonial-${i + 1}`}
                 />
               ))}
             </div>
@@ -1961,8 +1563,7 @@ export default function Home() {
         </div>
       </section>
 
-      
-
+      {/* CTA Hoodie */}
       <section className="home-section">
         <motion.div
           className="hoodie-card"
@@ -1974,27 +1575,27 @@ export default function Home() {
         >
           <div>
             <div className="hoodie-kicker">
-              مجموعة نمورا المميزة
-              <span style={{ color: 'var(--primary)' }}>فن</span>
+              {copy.premiumKicker} <span style={{ color: 'var(--primary)' }}>{copy.artWord}</span>
             </div>
-            <div className="hoodie-title">أناقة مطلقة</div>
-            <p className="hoodie-subtitle">قطع مميزة تعكس شخصيتك بذوق فريد</p>
+            <div className="hoodie-title">{copy.heroTitle}</div>
+            <p className="hoodie-subtitle">{copy.heroSubtitle}</p>
           </div>
+
           <div className="hoodie-actions">
             <Link className="btn-primary" to="/products">
-              تسوق الآن
+              {copy.shopNow}
             </Link>
             <Link className="btn-secondary" to="/about">
-              اكتشف المزيد
+              {copy.exploreMore}
             </Link>
           </div>
         </motion.div>
       </section>
 
+      {/* Style assistant */}
       <section className="home-section">
         <StyleAssistant />
       </section>
-
     </div>
   );
 }
