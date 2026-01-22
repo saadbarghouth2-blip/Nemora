@@ -269,7 +269,7 @@ export const Navbar = () => {
                   {['home', 'productsNav', 'about', 'contact'].map((key) => {
                     const path = key === 'home' ? '/' : `/${key.replace('Nav', '')}`;
                     return (
-                      <Link key={key} to={path} onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px', borderRadius: '18px', textDecoration: 'none', color: 'var(--text-main)', fontWeight: 700, marginBottom: '10px', background: location.pathname === path ? 'var(--primary)' : 'var(--bg-secondary)', color: location.pathname === path ? 'white' : 'var(--text-main)' }}>
+                      <Link key={key} to={path} onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px', borderRadius: '18px', textDecoration: 'none', fontWeight: 700, marginBottom: '10px', background: location.pathname === path ? 'var(--primary)' : 'var(--bg-secondary)', color: location.pathname === path ? 'white' : 'var(--text-main)' }}>
                         {t(key)}
                         <ChevronRight size={18} style={{ transform: isRtl ? "rotate(180deg)" : "none" }} />
                       </Link>
